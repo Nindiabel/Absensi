@@ -13,7 +13,7 @@
                                 <img src="{{ url('admin-ui/assets/images/logos/smart-keuangan.png') }}"
                                     alt="Logo Smart Keuangan" class="img-fluid mb-2">
                                 <p class="mb-4"><b>Aplikasi Pengelola Keuangan Bendahara</b></p>
-                                <a href="{{ base_url('smart-keuangan') }}" class="btn btn-primary shadow">Lihat Laporan →</a>
+                                <a href="{{ base_url('smart-keuangan') }}" class="btn btn-primary shadow bg-gradient">Lihat Laporan →</a>
                             </div>
                         </div>
                     </div>

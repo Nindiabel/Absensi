@@ -42,9 +42,9 @@
             <!-- Sidebar scroll-->
             <div>
                 <div class="brand-logo d-flex align-items-center justify-content-between">
-                    <a class="text-nowrap logo-img">
+                    <a class="text-nowrap logo-img text-start">
                         <img src="{{ url('admin-ui') }}/assets/images/logos/logo-2.png" alt=""
-                            width="250" class="img-fluid" />
+                            width="300" class="img-fluid" />
                     </a>
                     <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                         <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 12 12">

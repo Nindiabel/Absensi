@@ -53,7 +53,7 @@
                 @endphp
 
                 <li class="nav-item mb-2 me-md-3 me-1">
-                    <a class="nav-link rounded-5 px-4 {{ $emptyFund ? 'text-danger' : '' }} shadow-sm {{ $filterTeamID == $u->id ? 'active' : '' }}"
+                    <a class="nav-link rounded-5 px-4 {{ $emptyFund ? 'text-danger' : '' }} shadow-sm {{ $filterTeamID == $u->id ? 'active  bg-gradient' : '' }}"
                         href="{{ base_url('smart-keuangan?filter_team_id=' . $u->id) }}" navigate>
                         {{ $unitName }}
                     </a>
@@ -134,7 +134,7 @@
                                                 <h5 class="fw-bolder text-success">{{ rupiah($f->saldo) }}</h5>
                                             </div>
                                         </div>
-                                        <small>Terakhir Update <b>{{ formatedDate($f->updated_at, false) }}</b></small>
+                                        <small class="fs-10"><i>Terakhir Update <b>{{ formatedDate($f->updated_at, false) }}</b></i></small>
                                     </div>
                                 </div>
                             </a>

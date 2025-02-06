@@ -5,7 +5,7 @@
     <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
         <ul id="sidebarnav">
 
-            <h5 class="letter-spacing-1 mb-0 fw-bold">{{ tenantName() }}</h5>
+            <h5 class="mb-0 fw-bold text-primary-emphasis fw-bolder">{{ tenantName() }}</h5>
 
             <span class="sidebar-divider lg mb-3"></span>
 
