@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Entities\CompanyEntity;
 use App\Http\Entities\GeneralEntity;
 use App\Http\Usecases\UserUsecase;
+use App\Usecases\UserUsecase as UsecasesUserUsecase;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -41,6 +42,10 @@ class AuthController extends Controller
             session(['tenant_name' => $tenant->name]);
 
             $request->session()->regenerate();
+
+            if ($user->password == "$2y$12$2i3/Ln/Nf99VAwEYDxzsWueot4AFIEOyrBytjHTVfbk3gTUqwHOFG") {
+                return redirect()->intended('admin/auth/reset-default-password');
+            }
 
             return redirect()->intended('admin/app')->with('success', "Selamat Datang kembali!");
         } else {
@@ -79,4 +84,25 @@ class AuthController extends Controller
     //             ->with('error', $createProcess['message']);
     //     }
     // }
+
+
+
+    public function resetDefaultPassword(): View
+    {
+        return view("_admin.reset-default-password");
+    }
+
+    public function doResetDefaultPassword(Request $req): RedirectResponse
+    {
+        $usecase = new UsecasesUserUsecase();
+        $update = $usecase->changeDefaultPassword(
+            data: $req->input(),
+        );
+
+        if (empty($update['error'])) {
+            return redirect()->intended('admin/app')->with('success', "Password baru berhasil disimpan!");
+        } else {
+            return redirect()->intended('admin/reset-default-password')->with('error', "Maaf, terjadi kesalahan! Hubungi pengembang Aplikasi");
+        }
+    }
 }

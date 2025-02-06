@@ -296,4 +296,61 @@ class UserUsecase extends Usecase
         }
     }
 
+    public function changeDefaultPassword(array $data): array
+    {
+        $userID = Auth::user()->id;
+        $return = [];
+        $funcName = $this->className . ".changeDefaultPassword";
+
+        $validator = Validator::make($data, [
+            'password'         => 'required|min:6',
+            're_password'      => 'required|same:password',
+        ]);
+
+        $customAttributes = [
+            'password'         => 'Password Baru',
+            're_password'      => 'Ulangi Password Baru',
+        ];
+        $validator->setAttributeNames($customAttributes);
+        $validator->validate();
+
+        DB::beginTransaction();
+
+        try {
+            $locked = DB::table(DatabaseEntity::USER)
+                ->where('id', $userID)
+                ->whereNull("deleted_at")
+                ->lockForUpdate()
+                ->first(['id']);
+
+            if (!$locked) {
+                DB::rollback();
+
+                throw new Exception("FAILED LOCKED DATA");
+            }
+
+            DB::table(DatabaseEntity::USER)
+                ->where("id", $userID)
+                ->update([
+                    'password' => password_hash($data['password'], PASSWORD_DEFAULT),
+                ]);
+
+            DB::commit();
+
+            return Response::buildSuccess(
+                message: ResponseEntity::SUCCESS_MESSAGE_UPDATED
+            );
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            Log::error($e->getMessage(), [
+                "func_name" => $funcName,
+            ]);
+
+            return Response::buildErrorService($e->getMessage());
+        }
+
+        return $return;
+    }
+
 }

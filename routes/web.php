@@ -24,6 +24,9 @@ Route::prefix('admin')->middleware(["auth", "access-type:2"])->group(function ()
 });
 
 Route::prefix('admin')->middleware("auth")->group(function () {
+    Route::get('/auth/reset-default-password', [AuthController::class, 'resetDefaultPassword']);
+    Route::post('/auth/reset-default-password', [AuthController::class, 'doResetDefaultPassword']);
+    
     Route::get('/', [DashboardController::class, 'index']);
     Route::get('/test', [DashboardController::class, 'test']);
     Route::get('/test2', [DashboardController::class, 'test2']);
