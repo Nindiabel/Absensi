@@ -44,7 +44,7 @@
                 <div class="brand-logo d-flex align-items-center justify-content-between">
                     <a class="text-nowrap logo-img">
                         <img src="{{ url('admin-ui') }}/assets/images/logos/logo-2.png" alt=""
-                            width="200" />
+                            width="250" class="img-fluid" />
                     </a>
                     <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                         <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 12 12">
@@ -78,7 +78,7 @@
                                 <a class="nav-link " href="#" id="drop2" data-bs-toggle="dropdown"
                                     aria-expanded="false">
                                     <img src="{{ url('admin-ui') }}/assets/images/logos/logo-2.png" alt=""
-                                        width="150" class="img-fluid" />
+                                        width="230" class="img-fluid" />
                                 </a>
                             </li>
                         </ul>

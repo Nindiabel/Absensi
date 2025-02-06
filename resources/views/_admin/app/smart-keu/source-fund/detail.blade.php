@@ -8,7 +8,7 @@
 
                     <div class="col-md-6">
                         <p class="fs-5 mb-2">Detail Dana</p>
-                        <h1 class="mb-0">DANA BOS</h1>
+                        <h1 class="mb-0">{{ $sfName }}</h1>
                     </div>
                     <div class="col-md-6 text-end">
                         <div class="">
@@ -186,9 +186,10 @@
             let end_date = picker.endDate.format('YYYY-MM-DD');
 
             let sof_id = <?= $sofID ?>;
+            let sof_name = "<?= $sfName ?>";
 
             let url = BASE_URL +
-                `/smart-keuangan/sf/detail/${sof_id}?start_date=${start_date}&end_date=${end_date}`;
+                `/smart-keuangan/sf/detail/${sof_id}?start_date=${start_date}&end_date=${end_date}&sf_name=${sof_name}`;
             window.location.href = url;
         });
     });

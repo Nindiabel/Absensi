@@ -420,3 +420,13 @@ if (!function_exists('year_now')) {
         return $utc_time->format("Y");
     }
 }
+
+function teamID(): int
+{
+    return session("team_id");
+}
+
+function tenantName(): string
+{
+    return session("tenant_name") ?? "";
+}

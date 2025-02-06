@@ -53,9 +53,8 @@
                 @endphp
 
                 <li class="nav-item mb-2 me-md-3 me-1">
-                    <a class="nav-link rounded-5 px-4 {{ $emptyFund ? "text-danger" : "" }} shadow-sm {{ $filterTeamID == $u->id ? 'active' : '' }}"
-                        href="{{ base_url('smart-keuangan?filter_team_id=' . $u->id) }}"
-                        navigate>
+                    <a class="nav-link rounded-5 px-4 {{ $emptyFund ? 'text-danger' : '' }} shadow-sm {{ $filterTeamID == $u->id ? 'active' : '' }}"
+                        href="{{ base_url('smart-keuangan?filter_team_id=' . $u->id) }}" navigate>
                         {{ $unitName }}
                     </a>
                 </li>
@@ -63,6 +62,40 @@
         </ul>
     </div>
 </div>
+
+<style>
+    .card-fund {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 2px solid #e0e0e0;
+    }
+
+    .card-fund:hover {
+        border-radius: var(--bs-border-radius-xl) !important;
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border-color: #5851FF;
+    }
+
+    .card-fund .card-body {
+        transition: background-color 0.3s ease;
+    }
+
+    .card-fund:hover .card-body {
+        border-radius: 1rem !important;
+        background-color: #f5f5fc;
+    }
+
+    .card-fund:hover .badge {
+        background-color: #5851FF;
+        color: #fff;
+    }
+
+    .card-fund:hover h3 {
+        border-radius: var(--bs-border-radius-xl) !important;
+        color: #5851FF;
+    }
+
+</style>
 
 <div class="row">
     <div class="col-md-12">
@@ -73,8 +106,8 @@
                 <div class="row">
                     @foreach ($funds as $f)
                         <div class="col-md-3">
-                            <a href="{{ base_url('smart-keuangan/sf/detail/' . $f->id) }}">
-                                <div class="card border-2 shadow-sm rounded-4">
+                            <a href="{{ base_url('smart-keuangan/sf/detail/' . $f->id . '?sf_name=' . $f->sf_name) }}">
+                                <div class="card border-2 shadow-sm rounded-4 card-fund">
                                     <div class="card-body p-3">
                                         @php
                                             $unitName = explode(' - ', $f->team);
@@ -95,10 +128,10 @@
                                             <p class="mb-0 fs-3"><b>{{ $f->user }}</b></p>
                                         </div>
 
-                                        <div class="card mb-0 bg-light mt-3 mb-2">
+                                        <div class="card mb-0  mt-3 mb-2 border-1">
                                             <div class="card-body p-2">
                                                 <p class="mb-1">Sisa Saldo</p>
-                                                <h5 class="fw-bolder">{{ rupiah($f->saldo) }}</h5>
+                                                <h5 class="fw-bolder text-success">{{ rupiah($f->saldo) }}</h5>
                                             </div>
                                         </div>
                                         <small>Terakhir Update <b>{{ formatedDate($f->updated_at, false) }}</b></small>

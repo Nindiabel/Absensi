@@ -74,7 +74,6 @@ class SmartKeuController extends Controller
         ];
         $transactions = $this->trxUsecase->getAll($filter, false);
         $transactions = $transactions['data']['list'] ?? [];
-
         
         $trxCollect      = collect($transactions);
         $totalPemasukan   = $trxCollect->where('trx_type', 1)->sum('amount_actual');
@@ -85,6 +84,7 @@ class SmartKeuController extends Controller
             'transactions'     => $transactions,
             'totalPemasukan'   => $totalPemasukan,
             'totalPengeluaran' => $totalPengeluaran,
+            'sfName'           => $req->input('sf_name'),
             'page'             => $this->page,
         ]);
     }
