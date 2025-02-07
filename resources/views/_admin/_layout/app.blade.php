@@ -7,7 +7,7 @@
 
     @include('_admin._layout.favicon')
 
-    <title>{{ env('APP_NAME') }}</title>
+    <title>{{ config('app.name') }}</title>
 
     <link rel="stylesheet" href="{{ url('admin-ui') }}/assets/css/custom.css?v={{ env('APP_VERSION') }}" />
     <link rel="stylesheet" href="{{ url('admin-ui') }}/assets/css/sidebar.css?v={{ env('APP_VERSION') }}" />
