@@ -42,6 +42,9 @@ class SmartKeuUsecase extends Usecase
         $filterUser = $filterData['filter_user_id'] ?? "";
         $filterTeam = $filterData['filter_team_id'] ?? "";
 
+        $userAccess = $this->getUserAccess();
+        $filterTeamIds = $filterData['filter_team_ids'] ?? $userAccess->tenant_ids;
+
         try {
             $data = DB::connection(DatabaseEntity::SQL_SMARTKEU)
                 ->table("source_of_funds as sf")
@@ -55,6 +58,9 @@ class SmartKeuUsecase extends Usecase
             }
             if (!empty($filterTeam)) {
                 $data = $data->where('sf.team_id', (int) $filterTeam);
+            }
+            if (!empty($filterTeamIds)) {
+                $data = $data->whereIn('sf.team_id',  json_decode($filterTeamIds));
             }
 
             $data = $data->orderBy("sf.name", "asc")->paginate($limit)->appends(request()->query());
@@ -85,7 +91,6 @@ class SmartKeuUsecase extends Usecase
         $funcName = $this->className . ".getAllUnits";
 
         $userAccess = $this->getUserAccess();
-
         $filterTeamIds = $filterData['filter_team_ids'] ?? $userAccess->tenant_ids;
 
         try {
