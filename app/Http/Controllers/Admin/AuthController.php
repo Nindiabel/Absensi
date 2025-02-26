@@ -102,7 +102,7 @@ class AuthController extends Controller
         if (empty($update['error'])) {
             return redirect()->intended('admin/app')->with('success', "Password baru berhasil disimpan!");
         } else {
-            return redirect()->intended('admin/reset-default-password')->with('error', "Maaf, terjadi kesalahan! Hubungi pengembang Aplikasi");
+            return redirect()->intended('admin/auth/reset-default-password')->with('error', "Maaf, terjadi kesalahan! Hubungi pengembang Aplikasi");
         }
     }
 }
