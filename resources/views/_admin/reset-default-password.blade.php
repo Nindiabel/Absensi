@@ -53,7 +53,7 @@
                                     </div>
                                 @endif
 
-                                <form class="form w-100" action="<?= base_url('auth/reset-default-password') ?>" method="POST">
+                                <form class="form w-100" action="<?= base_url('admin/auth/reset-default-password') ?>" method="POST">
                                     @csrf
                                     <div class="mb-3">
                                         <label for="password" class="form-label">Password</label>

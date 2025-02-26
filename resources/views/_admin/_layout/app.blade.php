@@ -163,7 +163,6 @@
             // });
 
             form2.on('submit', function(e) {
-                console.log("sip")
                 if (!this.checkValidity()) {
                     // Jika form tidak valid, mencegah pengiriman form
                     e.preventDefault();
@@ -172,9 +171,7 @@
                     submitButton2.html(defaultSubmitBtnText);
                     form.append(errorElement);
 
-                    console.log("okok")
                 } else {
-                    console.log("xxxx")
                     // Jika form valid, aktifkan spinner pada tombol submit
                     submitButton2.addClass('disabled');
                     submitButton2.html(
