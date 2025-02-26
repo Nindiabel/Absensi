@@ -317,17 +317,17 @@ class UserUsecase extends Usecase
         DB::beginTransaction();
 
         try {
-            $locked = DB::table(DatabaseEntity::USER)
-                ->where('id', $userID)
-                ->whereNull("deleted_at")
-                ->lockForUpdate()
-                ->first(['id']);
+            // $locked = DB::table(DatabaseEntity::USER)
+            //     ->where('id', $userID)
+            //     ->whereNull("deleted_at")
+            //     ->lockForUpdate()
+            //     ->first(['id']);
 
-            if (!$locked) {
-                DB::rollback();
+            // if (!$locked) {
+            //     DB::rollback();
 
-                throw new Exception("FAILED LOCKED DATA");
-            }
+            //     throw new Exception("FAILED LOCKED DATA");
+            // }
 
             DB::table(DatabaseEntity::USER)
                 ->where("id", $userID)
