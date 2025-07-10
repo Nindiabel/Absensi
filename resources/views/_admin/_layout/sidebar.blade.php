@@ -29,6 +29,20 @@
                     <span class="hide-menu">SmartKeuangan</span>
                 </a>
             </li>
+            <li class="sidebar-item">
+                <a class="sidebar-link {{ $page == 'member' ? 'active' : '' }}" href="{{ base_url('member') }}" aria-expanded="false"
+                    navigate>
+                    @include('_admin._layout.icons.dashboard')
+                    <span class="hide-menu">Member</span>
+                </a>
+            </li>
+             <li class="sidebar-item">
+                <a class="sidebar-link {{ $page == 'member-category' ? 'active' : '' }}" href="{{ base_url('member-category') }}" aria-expanded="false"
+                    navigate>
+                    @include('_admin._layout.icons.dashboard')
+                    <span class="hide-menu">Member Kategori</span>
+                </a>
+            </li>
             <span class="sidebar-divider lg my-4"></span>
             <li class="sidebar-item">
                 <a class="sidebar-link {{ $page == 'setting' ? 'active' : '' }}"

@@ -24,7 +24,7 @@
                                 class="row gy-2 gx-3 align-items-center">
                                 <input type="hidden" name="filter_on" value="true">
                                 <div class="col- mb-2">
-                                    <label class="visually-hidden" for="filter_name">Kata kunci Nama Buku</label>
+                                    <label class="visually-hidden" for="filter_name">Kata kunci Nama Anggota</label>
                                     <input type="text" class="form-control" id="filter_name" autofocus
                                         name="filter_name" value="{{ $filter['filter_name'] ?? '' }}"
                                         placeholder="Kata kunci Nama Anggota atau No. Identitas">

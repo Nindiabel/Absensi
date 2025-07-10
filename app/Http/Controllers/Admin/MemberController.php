@@ -4,10 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Entities\ResponseEntity;
 use App\Http\Controllers\Controller;
-use App\Usecases\BookCategoryUsecase;
-use App\Usecases\BookshelveUsecase;
-use App\Usecases\BookUsecase;
-use App\Usecases\LoanUsecase;
 use App\Usecases\MemberCategoryUsecase;
 use App\Usecases\MemberUsecase;
 use Illuminate\Contracts\View\View;
@@ -15,9 +11,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class MemberController extends Controller
 {
@@ -40,7 +33,7 @@ class MemberController extends Controller
         $this->baseRedirect = "admin/" . $this->page['route'];
     }
 
-    public function index(Request $req): View | Response
+    public function index(Request $req): View|Response
     {
         $data = $this->usecase->getAll($req->input());
 
@@ -55,7 +48,7 @@ class MemberController extends Controller
         ]);
     }
 
-    public function add(): View | Response
+    public function add(): View|Response
     {
         $memberCategories = $this->memberCategoryUsecase->getAll();
         $memberCategories = $memberCategories['data']['list'] ?? [];
@@ -68,14 +61,12 @@ class MemberController extends Controller
 
     public function doCreate(Request $request): JsonResponse
     {
-        $process = $this->usecase->create(
-            data: $request,
-        );
+        $process = $this->usecase->create($request);
 
         if (empty($process['error'])) {
             return response()->json([
                 "success" => true,
-                "message" => ResponseEntity::SUCCESS_MESSAGE_UPDATED,
+                "message" => ResponseEntity::SUCCESS_MESSAGE_CREATED,
                 "redirect" => "member"
             ]);
         } else {
@@ -87,7 +78,7 @@ class MemberController extends Controller
         }
     }
 
-    public function update(int $id): View|RedirectResponse | Response
+    public function update(int $id): View|RedirectResponse|Response
     {
         $data = $this->usecase->getByID($id);
 
@@ -110,10 +101,7 @@ class MemberController extends Controller
 
     public function doUpdate(int $id, Request $request): JsonResponse
     {
-        $process = $this->usecase->update(
-            data: $request,
-            id: $id,
-        );
+        $process = $this->usecase->update($request, $id);
 
         if (empty($process['error'])) {
             return response()->json([
@@ -132,9 +120,7 @@ class MemberController extends Controller
 
     public function doDelete(int $id, Request $request): JsonResponse
     {
-        $process = $this->usecase->delete(
-            id: $id,
-        );
+        $process = $this->usecase->delete($id);
 
         if (empty($process['error'])) {
             return response()->json([
@@ -151,7 +137,7 @@ class MemberController extends Controller
         }
     }
 
-    public function detail(int $id): View|RedirectResponse | Response
+    public function detail(int $id): View|RedirectResponse|Response
     {
         $data = $this->usecase->getByID($id);
 
@@ -177,13 +163,14 @@ class MemberController extends Controller
             return response()->json([]);
         }
 
+        $result = [];
         foreach ($data as $row) {
-            $result[] = array(
-                'id'          => $row->id,
-                'name'        => $row->name,
-                'identity_no' => $row->identity_no,
+            $result[] = [
+                'id'            => $row->id,
+                'name'          => $row->name,
+                'identity_no'   => $row->identity_no,
                 'identity_type' => $row->identity_type,
-            );
+            ];
         }
 
         return response()->json($result);

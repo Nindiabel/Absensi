@@ -45,6 +45,15 @@ Route::prefix('admin')->middleware("auth")->group(function () {
         Route::post("/update/{id}", [MemberController::class, 'doUpdate']);
         Route::get('/delete/{id}', [MemberController::class, 'doDelete']);
     });
+     Route::prefix('member-category')->group(function () {
+        Route::get('/', [MemberCategoryController::class, 'index']);
+        Route::get('/add', [MemberCategoryController::class, 'add']);
+        Route::post('/add', [MemberCategoryController::class, 'doCreate']);
+        Route::get('/detail/{id}', [MemberCategoryController::class, 'detail']);
+        Route::get('/update/{id}', [MemberCategoryController::class, 'update']);
+        Route::post("/update/{id}", [MemberCategoryController::class, 'doUpdate']);
+        Route::get('/delete/{id}', [MemberCategoryController::class, 'doDelete']);
+    });
     
     Route::prefix('smart-keuangan')->group(function () {
         Route::get('/', [SmartKeuController::class, 'index']);
