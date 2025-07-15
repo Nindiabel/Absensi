@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AppController;
 use App\Http\Controllers\Admin\Apps\SmartKeuController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\ClassController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MemberCategoryController;
 use App\Http\Controllers\Admin\MemberController;
@@ -55,6 +56,17 @@ Route::prefix('admin')->middleware("auth")->group(function () {
         Route::get('/delete/{id}', [MemberCategoryController::class, 'doDelete']);
     });
     
+    Route::prefix('classe')->group(function () {
+        Route::get('/', [ClassController::class, 'index']);
+        Route::get('/api/search', [ClassController::class, 'searchAPI']);
+        Route::get('/add', [ClassController::class, 'add']);
+        Route::post('/add', [ClassController::class, 'doCreate']);
+        Route::get('/detail/{id}', [ClassController::class, 'detail']);
+        Route::get('/update/{id}', [ClassController::class, 'update']);
+        Route::post("/update/{id}", [ClassController::class, 'doUpdate']);
+        Route::get('/delete/{id}', [ClassController::class, 'doDelete']);
+    });
+
     Route::prefix('smart-keuangan')->group(function () {
         Route::get('/', [SmartKeuController::class, 'index']);
         Route::get('/sf/detail/{id}', [SmartKeuController::class, 'sfDetail']);

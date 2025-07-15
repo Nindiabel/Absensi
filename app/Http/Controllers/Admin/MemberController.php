@@ -6,6 +6,7 @@ use App\Entities\ResponseEntity;
 use App\Http\Controllers\Controller;
 use App\Usecases\MemberCategoryUsecase;
 use App\Usecases\MemberUsecase;
+use App\Usecases\ClassUsecase;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -16,6 +17,8 @@ class MemberController extends Controller
 {
     protected $usecase;
     protected $memberCategoryUsecase;
+
+    protected $classUsecase;
     protected $bookshelveUsecase;
     protected $loanUsecase;
     protected $page = [
@@ -27,9 +30,11 @@ class MemberController extends Controller
     public function __construct(
         MemberUsecase $usecase,
         MemberCategoryUsecase $memberCategoryUsecase,
+        ClassUsecase $classUsecase,
     ) {
         $this->usecase = $usecase;
         $this->memberCategoryUsecase = $memberCategoryUsecase;
+        $this->classUsecase = $classUsecase;
         $this->baseRedirect = "admin/" . $this->page['route'];
     }
 
@@ -53,9 +58,13 @@ class MemberController extends Controller
         $memberCategories = $this->memberCategoryUsecase->getAll();
         $memberCategories = $memberCategories['data']['list'] ?? [];
 
+        $classes = $this->classUsecase->getAll();
+        $classes = $classes['data']['list'] ?? [];
+
         return render_view("_admin.member.add", [
             'page' => $this->page,
             'memberCategories' => $memberCategories,
+            'classes' => $classes,
         ]);
     }
 
@@ -92,10 +101,14 @@ class MemberController extends Controller
         $memberCategories = $this->memberCategoryUsecase->getAll();
         $memberCategories = $memberCategories['data']['list'] ?? [];
 
+         $classes = $this->classUsecase->getAll();
+         $classes = $classes['data']['list'] ?? [];
+
         return render_view("_admin.member.update", [
             'data' => (object) $data,
             'page' => $this->page,
             'memberCategories' => $memberCategories,
+            'classes' => $classes,
         ]);
     }
 
@@ -147,6 +160,15 @@ class MemberController extends Controller
                 ->with('error', ResponseEntity::DEFAULT_ERROR_MESSAGE);
         }
         $data = $data['data'] ?? [];
+
+        $className = '-';
+        if (!empty($data['class_id'])) {
+            $class = $this->classUsecase->getByID($data['class_id']);
+            if (!empty($class['data'])) {
+                $className = $class['data']['name'];
+            }
+        }
+        $data['class_name'] = $className;
 
         return render_view("_admin.member.detail", [
             'data' => (object) $data,

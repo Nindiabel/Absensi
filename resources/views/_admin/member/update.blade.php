@@ -34,6 +34,17 @@
                                 </select>
                             </div>
                             <div class="mb-3">
+                                <label for="class_id" class="form-label">Kelas <small class="text-muted"></small></label>
+                                <select name="class_id" id="class_id" class="form-select">
+                                    <option value="">- Pilih Kelas -</option>
+                                    @foreach ($classes as $class)
+                                        <option value="{{ $class->id }}" @selected($data->class_id == $class->id)>
+                                            {{ $class->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3">
                                 <label for="identity_no" class="form-label">No. Identitas</label>
                                 <input type="text" class="form-control" name="identity_no" id="identity_no"
                                     value="{{ $data->identity_no }}" required>

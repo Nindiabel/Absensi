@@ -36,6 +36,18 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="class_id" class="form-label">Kelas</label>
+                        <select name="class_id" id="class_id" class="form-select">
+                            <option value="">- Pilih Kelas -</option>
+                            @foreach ($classes as $c)
+                                <option value="{{ $c->id }}" {{ old('class_id') == $c->id ? 'selected' : '' }}>
+                                    {{ $c->name }} ({{ $c->enrollment_year }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="identity_no" class="form-label">No. Identitas</label>
                         <input type="text" class="form-control" name="identity_no" id="identity_no"
                             value="{{ old('identity_no') }}" required>

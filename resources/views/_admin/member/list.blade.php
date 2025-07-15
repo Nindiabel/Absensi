@@ -54,8 +54,9 @@
                     <div class="table-responsive-sm">
                         <table class="table table-bordered table-hover mt-3 table-sm">
                             <thead class="table-light">
-                                <th class="table-header" style="--width: 80%">ANGGOTA</th>
-                                <th class="table-header text-center">AKSI</th>
+                                <th class="table-header" style="--width: 80%">Nama & Deskripsi</th>
+                                <th class="table-header text-center">Kelas</th>
+                                <th class="table-header text-center">Aksi</th>
                             </thead>
                             <tbody>
                                 @foreach ($data as $d)
@@ -70,6 +71,13 @@
                                                     {{ $d->identity_no }} - ({{ $d->join_year }})
                                                 </p>
                                             </div>
+                                        </td>
+                                        <td class="text-center">
+                                            @if (!empty($d->class) && $d->class !== '-')
+                                                {{ title($d->class) }}
+                                            @else
+                                                -
+                                            @endif
                                         </td>
                                         <td class="text-center">
                                             <div class="dropdown">

@@ -35,6 +35,7 @@ class MemberUsecase extends Usecase
             $data = DB::connection(DatabaseEntity::SQL_READ)
                 ->table(DatabaseEntity::MEMBER, 'b')
                 ->leftJoin("member_categories as bc", "bc.id", "=", "b.category_id")
+                ->leftJoin("classes as c", "c.id", "=", "b.class_id")
                 ->whereNull("b.deleted_at");
 
             if (!empty($filterName)) {
@@ -47,7 +48,7 @@ class MemberUsecase extends Usecase
                 $data = $data->where('b.category_id', (int) $filterCtg);
             }
 
-            $fields = ['b.*', 'bc.name as category'];
+            $fields = ['b.*', 'bc.name as category', 'c.name as class'];
 
             $data = $data->orderBy("b.created_at", "desc")->paginate($limit, $fields)->appends(request()->query());
 
@@ -80,9 +81,10 @@ class MemberUsecase extends Usecase
             $data = DB::connection(DatabaseEntity::SQL_READ)
                 ->table(DatabaseEntity::MEMBER, "b")
                 ->leftJoin("member_categories as bc", "bc.id", "=", "b.category_id")
+                ->leftJoin("classes as c", "c.id", "=", "b.class_id")
                 ->whereNull("b.deleted_at")
                 ->where('b.id', $id)
-                ->first(['b.*', 'bc.name as category']);
+                ->first(['b.*', 'bc.name as category', 'c.name as class']);
 
             return Response::buildSuccess(
                 data: collect($data)->toArray()
@@ -104,24 +106,26 @@ class MemberUsecase extends Usecase
         $validator = Validator::make($data->all(), [
             'name'        => 'required',
             'category_id' => 'required|exists:member_categories,id',
+            'class_id'    => 'nullable|exists:classes,id',
         ]);
 
         $customAttributes = [
             'name'        => 'Nama',
             'category_id' => 'Kategori Anggota',
+            'class_id'    => 'Kelas', 
         ];
         $validator->setAttributeNames($customAttributes);
         $validator->validate();
 
         DB::beginTransaction();
         try {
-            // Pastikan identity_type sama dengan category_id
             $identityType = $data->input('identity_type', $data->input('category_id'));
 
             $memberID = DB::table(DatabaseEntity::MEMBER)
                 ->insertGetId([
                     'name'          => $data['name'],
                     'category_id'   => $data['category_id'],
+                    'class_id'      => $data->input('class_id'),
                     'identity_no'   => $data['identity_no'],
                     'identity_type' => $identityType,
                     'join_year'     => $data['join_year'],
@@ -134,7 +138,6 @@ class MemberUsecase extends Usecase
                     ->where('id', $memberID)
                     ->update(['identity_no' => $memberID]);
             }
-
             DB::commit();
 
             return Response::buildSuccessCreated();
@@ -156,23 +159,25 @@ class MemberUsecase extends Usecase
         $validator = Validator::make($data->all(), [
             'name'        => 'required',
             'category_id' => 'required|exists:member_categories,id',
+            'class_id'    => 'nullable|exists:classes,id',
         ]);
 
         $customAttributes = [
             'name'        => 'Nama',
             'category_id' => 'Kategori Anggota',
+            'class_id'    => 'Kelas',
         ];
         $validator->setAttributeNames($customAttributes);
         $validator->validate();
 
         DB::beginTransaction();
         try {
-            // Pastikan identity_type sama dengan category_id
             $identityType = $data->input('identity_type', $data->input('category_id'));
 
             $update = [
                 'name'          => $data['name'],
                 'category_id'   => $data['category_id'],
+                'class_id'      => $data->input('class_id', null),
                 'identity_no'   => $data['identity_no'],
                 'identity_type' => $identityType,
                 'join_year'     => $data['join_year'],
