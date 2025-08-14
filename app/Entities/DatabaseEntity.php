@@ -31,4 +31,6 @@ class DatabaseEntity
 
     const LOAN = "loans";
     const LOAN_DETAIL = "loan_details";
+
+    const CLASSE = "classes";
 }

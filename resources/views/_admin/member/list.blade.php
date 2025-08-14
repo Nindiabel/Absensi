@@ -24,7 +24,7 @@
                                 class="row gy-2 gx-3 align-items-center">
                                 <input type="hidden" name="filter_on" value="true">
                                 <div class="col- mb-2">
-                                    <label class="visually-hidden" for="filter_name">Kata kunci Nama Buku</label>
+                                    <label class="visually-hidden" for="filter_name">Kata kunci Nama Anggota</label>
                                     <input type="text" class="form-control" id="filter_name" autofocus
                                         name="filter_name" value="{{ $filter['filter_name'] ?? '' }}"
                                         placeholder="Kata kunci Nama Anggota atau No. Identitas">
@@ -54,8 +54,9 @@
                     <div class="table-responsive-sm">
                         <table class="table table-bordered table-hover mt-3 table-sm">
                             <thead class="table-light">
-                                <th class="table-header" style="--width: 80%">ANGGOTA</th>
-                                <th class="table-header text-center">AKSI</th>
+                                <th class="table-header" style="--width: 80%">Nama & Deskripsi</th>
+                                <th class="table-header text-center">Kelas</th>
+                                <th class="table-header text-center">Aksi</th>
                             </thead>
                             <tbody>
                                 @foreach ($data as $d)
@@ -70,6 +71,13 @@
                                                     {{ $d->identity_no }} - ({{ $d->join_year }})
                                                 </p>
                                             </div>
+                                        </td>
+                                        <td class="text-center">
+                                            @if (!empty($d->class) && $d->class !== '-')
+                                                {{ title($d->class) }}
+                                            @else
+                                                -
+                                            @endif
                                         </td>
                                         <td class="text-center">
                                             <div class="dropdown">
