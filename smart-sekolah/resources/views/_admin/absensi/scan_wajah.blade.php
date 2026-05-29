@@ -17,8 +17,8 @@
                     <select id="cameraSelect" class="form-select w-auto"></select>
                 </div>
 
-                <div class="video-container mx-auto position-relative shadow" style="width: 100%; border-radius: 12px; overflow: hidden; background: #000;">
-                    <video id="videoElement" autoplay playsinline style="width: 100%; height: auto; transform: scaleX(-1);"></video>
+                <div class="video-container mx-auto position-relative shadow" style="width: 100%; max-width: 380px; max-height: 50vh; border-radius: 12px; overflow: hidden; background: #000; display: flex; justify-content: center; align-items: center;">
+                    <video id="videoElement" autoplay playsinline style="width: 100%; height: 100%; max-height: 50vh; transform: scaleX(-1); object-fit: cover;"></video>
                     <canvas id="canvasElement" style="display:none;"></canvas>
                     
                     <div id="scanOverlay" class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.5); display: none !important;">
@@ -177,15 +177,27 @@ function initScanWebcam() {
                 contentType: false,
                 success: function (res) {
                     if (res.success) {
-                        statusMessage.innerHTML = '<div class="alert alert-success fs-5 fw-bold">' + res.message + '</div>';
-                        
-                        // Hide overlay and allow next scan naturally
-                        setTimeout(() => {
-                            scanOverlay.style.setProperty('display', 'none', 'important');
-                            statusMessage.innerHTML = '';
-                            isProcessing = false;
-                        }, 2500);
-
+                        stopScanning();
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: res.message,
+                                icon: 'success',
+                                confirmButtonText: 'OK',
+                                allowOutsideClick: false
+                            }).then((result) => {
+                                if (typeof loadPage === 'function') {
+                                    var targetUrl = "{{ base_url($page['route']) }}";
+                                    window.history.pushState(null, '', targetUrl);
+                                    loadPage(targetUrl);
+                                } else {
+                                    window.location.href = "{{ base_url($page['route']) }}";
+                                }
+                            });
+                        } else {
+                            alert(res.message);
+                            window.location.href = "{{ base_url($page['route']) }}";
+                        }
                     } else {
                         statusMessage.innerHTML = '<div class="alert alert-danger">' + res.message + '</div>';
                         setTimeout(() => {

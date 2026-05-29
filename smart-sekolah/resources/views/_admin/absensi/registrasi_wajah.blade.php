@@ -37,8 +37,8 @@
                     </div>
 
                     <div class="mb-4">
-                        <div class="video-container mx-auto" style="width: 100%; max-width: 480px; position: relative; border-radius: 8px; overflow: hidden; background: #000;">
-                            <video id="webcam" autoplay playsinline style="width: 100%; height: auto;"></video>
+                        <div class="video-container mx-auto" style="width: 100%; max-width: 380px; max-height: 50vh; position: relative; border-radius: 8px; overflow: hidden; background: #000; display: flex; justify-content: center; align-items: center;">
+                            <video id="webcam" autoplay playsinline style="width: 100%; height: 100%; max-height: 50vh; transform: scaleX(-1); object-fit: cover;"></video>
                             <canvas id="canvas" style="display:none;"></canvas>
                         </div>
                         <div id="camera-error" class="text-danger mt-2" style="display:none;">
