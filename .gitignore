@@ -1,4 +1,3 @@
-```gitignore
 # =========================
 # Laravel
 # =========================
@@ -67,6 +66,16 @@ htmlcov/
 *.pkl
 *.dat
 
+# SQL dump
+*.sql
+
+# Test / dataset images
+face-liveness-detection/test/
+
+# Dataset / images
+*.jpg
+*.png
+
 # Jupyter
 .ipynb_checkpoints/
 
@@ -76,6 +85,3 @@ Thumbs.db
 
 # Logs
 *.log
-```
-*.dat
-*.sql
