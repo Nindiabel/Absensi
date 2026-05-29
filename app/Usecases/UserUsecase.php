@@ -27,11 +27,39 @@ class UserUsecase extends Usecase
         $funcName = $this->className . ".getAll";
 
         try {
+            $keyword = request('keyword');
+            $categoryID = request('category_id');
+            $isActive = request('is_active');
+
             $data = DB::connection(DatabaseEntity::SQL_READ)
-                ->table(DatabaseEntity::USER)
-                ->whereNull("deleted_at")
-                ->orderBy("created_at", "desc")
-                ->paginate(20);
+                ->table(DatabaseEntity::USER . ' as u')
+                ->leftJoin('members as m', 'm.id', '=', 'u.member_id')
+                ->leftJoin('member_categories as mc', 'mc.id', '=', 'm.category_id')
+                ->whereNull('u.deleted_at')
+                ->whereNull('m.deleted_at')
+                ->whereIn('mc.name', ['Guru', 'Tendik'])
+                ->when(!empty($keyword), function ($query) use ($keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('u.name', 'like', '%' . $keyword . '%')
+                            ->orWhere('u.email', 'like', '%' . $keyword . '%')
+                            ->orWhere('m.name', 'like', '%' . $keyword . '%');
+                    });
+                })
+                ->when(!empty($categoryID), function ($query) use ($categoryID) {
+                    $query->where('m.category_id', $categoryID);
+                })
+                ->when($isActive !== null && $isActive !== '', function ($query) use ($isActive) {
+                    $query->where('u.is_active', $isActive);
+                })
+                ->select(
+                    'u.*',
+                    'm.name as member_name',
+                    'm.identity_no',
+                    'mc.name as category_name'
+                )
+                ->orderBy('u.created_at', 'desc')
+                ->paginate(20)
+                ->appends(request()->query());
 
             return Response::buildSuccess(
                 [
@@ -80,6 +108,7 @@ class UserUsecase extends Usecase
         $validator = Validator::make($data->all(), [
             'name' => 'required',
             'email' => 'required|email',
+            'access_type' => 'required|in:1,2,3',
         ]);
 
         $validator->validate();
@@ -92,7 +121,7 @@ class UserUsecase extends Usecase
                     'email'       => $data['email'],
                     'access_type' => $data['access_type'],
                     'password'    => Hash::make('asdasd'),
-                    'access_type' => 1,
+                    // 'access_type' => 1,
                     'is_active'   => 1,
                     'created_by'  => Auth::user()->id,
                     'created_at'  => now(),
@@ -119,6 +148,7 @@ class UserUsecase extends Usecase
         $validator = Validator::make($data->all(), [
             'name' => 'required',
             'email' => 'required|email',
+            'access_type' => 'required|in:1,2,3',
         ]);
 
         $validator->validate();
@@ -204,7 +234,7 @@ class UserUsecase extends Usecase
                         ->table(DatabaseEntity::USER)
                         ->where('id', (int) $userID)
                         ->first(['password']);
-                        
+
                     if (!Hash::check($value, $user->password)) {
                         $fail('Password saat ini salah.');
                     }
@@ -213,7 +243,7 @@ class UserUsecase extends Usecase
             'password'         => 'required|min:6', // tambahkan aturan sesuai kebutuhan
             're_password'      => 'required|same:password',
         ]);
-        
+
         $customAttributes = [
             'current_password' => 'Password Lama',
             'password'         => 'Password Baru',
@@ -221,7 +251,7 @@ class UserUsecase extends Usecase
         ];
         $validator->setAttributeNames($customAttributes);
         $validator->validate();
-        
+
         DB::beginTransaction();
 
         try {
@@ -352,5 +382,4 @@ class UserUsecase extends Usecase
 
         return $return;
     }
-
 }

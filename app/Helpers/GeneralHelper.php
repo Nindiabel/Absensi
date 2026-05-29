@@ -383,10 +383,16 @@ function render_view($view_name, $data = [])
 {
     if (request()->ajax()) {
         return response()->view($view_name, $data)->header('Cache-Control', 'no-cache, no-store, must-revalidate');
-    } else {
-        return view('_admin/_layout/app')->with('content', view($view_name, $data)->render());
-    }
+    }  
+    $sidebar = request()->segment(1) === 'pegawai'
+        ? '_pegawai._layout.sidebar'
+        : ($data['sidebar'] ?? '_admin._layout.sidebar');
+
+    return view('_admin/_layout/app')
+        ->with('content', view($view_name, $data)->render())
+        ->with('sidebar', $sidebar);
 }
+
 function render($view_name, $data = [])
 {
     $parent = explode(".", $view_name);
@@ -402,7 +408,7 @@ function getUserAccessType($id)
 {
     $data = [
         1 => "Admin (Semua Akses)",
-        2 => "Pegawai",
+        3 => "Pegawai",
     ];
 
     if (array_key_exists($id, $data)) {

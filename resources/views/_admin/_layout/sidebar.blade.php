@@ -44,6 +44,13 @@
             </a>
         </li>
         <li class="sidebar-item">
+            <a class="sidebar-link {{ $page == 'absensi' ? 'active' : '' }}" href="{{ base_url('absensi') }}"
+                aria-expanded="false" navigate>
+                @include('_admin._layout.icons.dashboard')
+                <span class="hide-menu">Absensi</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
             <a class="sidebar-link {{ $page == 'member-category' ? 'active' : '' }}"
                 href="{{ base_url('member-category') }}" aria-expanded="false" navigate>
                 @include('_admin._layout.icons.dashboard')

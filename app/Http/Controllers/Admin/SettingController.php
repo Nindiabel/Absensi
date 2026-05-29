@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Entities\ResponseEntity;
 use App\Http\Controllers\Controller;
+use App\Usecases\AbsensiUsecase;
 use App\Usecases\MemberCategoryUsecase;
 use App\Usecases\UserUsecase;
 use Illuminate\Http\JsonResponse;
@@ -16,6 +17,7 @@ class SettingController extends Controller
 {
     protected $usecase;
     protected $userUsecase;
+    protected $absensiUsecase;
     protected $page = [
         "route" => "setting",
         "title" => "Pengaturan",
@@ -25,9 +27,11 @@ class SettingController extends Controller
     public function __construct(
         MemberCategoryUsecase $usecase,
         UserUsecase $userUsecase,
+        AbsensiUsecase $absensiUsecase,
     ) {
         $this->usecase = $usecase;
         $this->userUsecase = $userUsecase;
+        $this->absensiUsecase   = $absensiUsecase;
         $this->baseRedirect = "admin/" . $this->page['route'];
     }
 
@@ -49,6 +53,24 @@ class SettingController extends Controller
 
         return redirect()
             ->intended("admin/setting/general")
+            ->with('success', ResponseEntity::SUCCESS_MESSAGE_UPDATED);
+    }
+
+    public function absensi(Request $req): View|Response
+    {
+        $setting = $this->absensiUsecase->getSetting()['data']['data'] ?? null;
+ 
+        return render_view("_admin.setting.absensi", [
+            'setting' => $setting,
+            'page'    => $this->page,
+        ]);
+    }
+
+    public function doUpdateAbsensi(Request $request): RedirectResponse
+    {
+        $this->absensiUsecase->updateSetting($request);
+ 
+        return redirect('admin/setting/absensi')
             ->with('success', ResponseEntity::SUCCESS_MESSAGE_UPDATED);
     }
 

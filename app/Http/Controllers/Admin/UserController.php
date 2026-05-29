@@ -10,6 +10,7 @@ use App\Usecases\UserUsecase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -31,9 +32,16 @@ class UserController extends Controller
     {
         $data = $this->usecase->getAll();
 
+        $categories = DB::table('member_categories')
+            ->whereNull('deleted_at')
+            ->whereIn('name', ['Guru', 'Tendik'])
+            ->get();
+
         return render_view("_admin.users.list", [
             'data' => $data['data']['list'] ?? [],
             'page' => $this->page,
+            'filter' => request()->all(),
+            'categories' => $categories,
         ]);
     }
 
@@ -125,7 +133,7 @@ class UserController extends Controller
 
     public function resetPassword(int $id): JsonResponse
     {
-        $resetProcess = $this->usecase->resetPassword(id: $id);
+        $process = $this->usecase->resetPassword(id: $id);
 
         if (empty($process['error'])) {
             return response()->json([
@@ -133,12 +141,12 @@ class UserController extends Controller
                 "message" => 'Password berhasil direset menjadi default',
                 "redirect" => $this->page['route']
             ]);
-        } else {
-            return response()->json([
-                "success" => false,
-                "message" => ResponseEntity::DEFAULT_ERROR_MESSAGE,
-                "redirect" => $this->page['route']
-            ]);
         }
+
+        return response()->json([
+            "success" => false,
+            "message" => ResponseEntity::DEFAULT_ERROR_MESSAGE,
+            "redirect" => $this->page['route']
+        ]);
     }
 }

@@ -39,4 +39,8 @@ class ResponseEntity
     {
         return "Perubahan Data $name berhasil disimpan!";
     }
+    public static function getNotFoundMsg($name): string
+    {
+        return "Data $name tidak ditemukan!";
+    }
 }

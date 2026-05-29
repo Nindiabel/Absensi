@@ -12,6 +12,12 @@
                     <li class="nav-item me-2">
                         <a class="nav-link rounded-5 px-4 active shadow-sm" href="{{ base_url('setting/general') }}">Umum</a>
                     </li>
+                    <li class="nav-item me-2">
+                        <a class="nav-link rounded-5 px-4 shadow-sm"
+                           href="{{ base_url('setting/absensi') }}" navigate>
+                            Aturan Absensi
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link rounded-5 px-4 shadow-sm" href="{{ base_url('setting/change-password') }}"
                             navigate>Ubah

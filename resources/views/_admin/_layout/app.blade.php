@@ -19,7 +19,7 @@
 
     <script src="{{ url('admin-ui') }}/assets/libs/jquery/dist/jquery.min.js"></script>
     <script>
-        $(document).on('input', 'input[type="text"], textarea', function() {
+        $(document).on('input', 'input[type="text"]:not(.no-uppercase)', function() {
             let inputElement = $(this)[0];
             let start = inputElement.selectionStart;
             let end = inputElement.selectionEnd;
@@ -54,7 +54,11 @@
                     </div>
                 </div>
                 <!-- Sidebar navigation-->
-                @include('_admin/_layout/sidebar')
+                @if(request()->segment(1) === 'pegawai')
+                    @include('_pegawai._layout.sidebar')
+                @else
+                    @include('_admin._layout.sidebar')
+                @endif
             </div>
             <!-- End Sidebar scroll-->
         </aside>
@@ -215,16 +219,16 @@
             // $('.xx').css('display', 'block');
         });
 
-        $(function() {
-
-            $('#menu li a').click(function(event) {
+        $(function () {
+            $('#sidebarnav li > a.has-arrow').on('click', function (event) {
                 var elem = $(this).next();
                 if (elem.is('ul')) {
                     event.preventDefault();
-                    $('#menu ul:visible').not(elem).slideUp();
+                    // tutup dropdown lain
+                    $('#sidebarnav ul:visible').not(elem).slideUp();
+                    // toggle dropdown
                     elem.slideToggle();
                 }
-                return false;
             });
         });
     </script>

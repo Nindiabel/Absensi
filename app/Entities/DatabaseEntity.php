@@ -27,6 +27,11 @@ class DatabaseEntity
     const MEMBER = "members";
     const MEMBER_CATEGORY = "member_categories";
 
+    const ABSENSI_MEMBER = "absensi_member";
+    const ABSENSI_SETTINGS = "absensi_settings";
+    const DATA_WAJAH_MEMBER = "data_wajah_member";
+    const LOG_ABSENSI_FACE_RECOGNITION = "log_absensi_face_recognition";
+
     const SETTING = "setting";
 
     const LOAN = "loans";
