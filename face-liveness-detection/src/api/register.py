@@ -1,4 +1,5 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
+# pyrefly: ignore [missing-import]
 import face_recognition
 import numpy as np
 import cv2

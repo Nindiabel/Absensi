@@ -1,3 +1,4 @@
+# pyrefly: ignore [missing-import]
 import dlib
 from scipy.spatial import distance
 import os

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, UploadFile, File
+# pyrefly: ignore [missing-import]
 import face_recognition
 import numpy as np
 import cv2
@@ -22,12 +23,19 @@ async def absen(file: UploadFile = File(...), session_id: str = Form(None)):
     npimg = np.frombuffer(contents, np.uint8)
     frame = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
     
+    # Resize frame to max width 480px to significantly speed up processing
+    h, w = frame.shape[:2]
+    if w > 480:
+        scale = 480 / float(w)
+        frame = cv2.resize(frame, (0, 0), fx=scale, fy=scale)
+        
     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     # ======================
     # LIVENESS & EAR CHECK
     # ======================
-    live, score, ear = detector.is_live(rgb)
+    # Gunakan threshold yang sangat tinggi (0.98) agar foto/hp langsung ditolak (spoof)
+    live, score, ear = detector.is_live(rgb, threshold=0.98)
 
     if not live:
         return {"status": "spoof"}
@@ -37,9 +45,10 @@ async def absen(file: UploadFile = File(...), session_id: str = Form(None)):
     # ======================
     if session_id:
         if session_id not in blink_states:
-            blink_states[session_id] = {"closed_detected": False, "has_blinked": False}
+            blink_states[session_id] = {"closed_detected": False, "has_blinked": False, "frames": 0}
         
         state = blink_states[session_id]
+        state["frames"] += 1
         
         EAR_THRESHOLD = 0.21
         
@@ -52,6 +61,9 @@ async def absen(file: UploadFile = File(...), session_id: str = Form(None)):
                 state["has_blinked"] = True
                 
         if not state["has_blinked"]:
+            # Jika sudah lebih dari 6 frame (sekitar 3 detik) tidak berkedip, anggap foto/spoof
+            if state["frames"] > 6:
+                return {"status": "spoof"}
             return {"status": "waiting_blink"}
 
     # ======================
@@ -83,7 +95,9 @@ async def absen(file: UploadFile = File(...), session_id: str = Form(None)):
             return {
                 "status": "success",
                 "member_id": member_id,
-                "distance": float(dist)
+                "distance": float(dist),
+                "ear": float(ear) if ear is not None else 0.0,
+                "liveness_score": float(score) if score is not None else 0.0
             }
 
     return {"status": "unknown"}

@@ -75,9 +75,14 @@
                             <circle cx="9" cy="9" r="2" />
                             <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
                         </svg>
-                        <p class="text-muted mt-3 mb-0">
-                            {{ empty($data->jam_pulang) ? 'Belum scan pulang' : 'Foto tidak tersedia' }}
-                        </p>
+                        @if(in_array($data->status_kehadiran, ['alpha', 'izin', 'sakit']))
+                            <p class="text-muted mt-3 mb-0">Foto tidak tersedia</p>
+                            <small class="text-muted">Pegawai {{ ucfirst($data->status_kehadiran) }}</small>
+                        @else
+                            <p class="text-muted mt-3 mb-0">
+                                {{ empty($data->jam_pulang) ? 'Belum scan pulang' : 'Foto tidak tersedia' }}
+                            </p>
+                        @endif
                     </div>
                 @endif
             </div>

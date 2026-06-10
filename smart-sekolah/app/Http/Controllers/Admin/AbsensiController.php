@@ -198,6 +198,14 @@ class AbsensiController extends Controller
     {
         $process = $this->usecase->scanFace($request);
 
+        if (!empty($process['waiting_blink'])) {
+            return response()->json([
+                "success" => false,
+                "waiting_blink" => true,
+                "message" => $process['message'] ?? 'Silakan kedipkan mata Anda...'
+            ]);
+        }
+
         return response()->json([
             "success"  => empty($process['error']),
             "message"  => $process['message'] ?? ResponseEntity::DEFAULT_ERROR_MESSAGE,

@@ -14,7 +14,6 @@
                             class="btn btn-success fw-bold me-2">
                             Download
                         </a>
-                        
                     </div>
                 </div>
 

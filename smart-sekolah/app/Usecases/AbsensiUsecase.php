@@ -41,8 +41,10 @@ class AbsensiUsecase extends Usecase
 
         $validator = Validator::make($request->all(), [
             'jam_masuk'           => 'required',
-            'jam_pulang'          => 'required',
+            'jam_pulang'          => 'required|after:jam_masuk',
             'toleransi_terlambat' => 'required|integer|min:0',
+        ], [
+            'jam_pulang.after' => 'Jam pulang harus lebih besar dari jam masuk.'
         ]);
 
         $validator->validate();
@@ -154,6 +156,7 @@ class AbsensiUsecase extends Usecase
                 "mc.name as category_name",
                 "dw.foto_wajah as foto_registrasi",       // foto registrasi (untuk perbandingan)
                 "a.foto_absensi",      // foto saat absensi (yang ditampilkan)
+                "a.foto_pulang",       // foto saat pulang
                 "a.tanggal_absensi",
                 "a.jam_masuk",
                 "a.jam_pulang",
@@ -467,6 +470,16 @@ class AbsensiUsecase extends Usecase
                     'updated_at'   => now(),
                 ]);
 
+            DB::table('log_absensi_face_recognition')->insert([
+                'member_id' => $request->member_id,
+                'tanggal' => $today,
+                'waktu' => $jamPulang,
+                'status_liveness' => 1,
+                'hasil_pengenalan' => 'berhasil',
+                'nama_perangkat' => 'Mesin Absensi / Scan Biasa',
+                'created_at' => now()
+            ]);
+
             DB::commit();
 
             return Response::buildSuccess(
@@ -590,17 +603,26 @@ class AbsensiUsecase extends Usecase
             
             $apiUrl = env('FACE_LIVENESS_API_URL', 'http://127.0.0.1:8000');
             
+            $postData = [];
+            if ($request->has('session_id')) {
+                $postData['session_id'] = $request->session_id;
+            }
+
             // Kirim gambar ke Python API untuk diabsen
             $response = \Illuminate\Support\Facades\Http::attach(
                 'file',
                 file_get_contents($file->getRealPath()),
                 'scan.jpg'
-            )->post($apiUrl . '/face/absen');
+            )->post($apiUrl . '/face/absen', $postData);
 
             if ($response->successful()) {
                 $result = $response->json();
                 
                 if (isset($result['status'])) {
+                    if ($result['status'] == 'waiting_blink') {
+                        DB::rollback();
+                        return ['waiting_blink' => true, 'message' => 'Silakan kedipkan mata Anda...'];
+                    }
                     if ($result['status'] == 'spoof') {
                         DB::rollback();
                         return ['error' => true, 'message' => 'Liveness check gagal. Wajah terdeteksi palsu!'];
@@ -702,6 +724,20 @@ class AbsensiUsecase extends Usecase
                                     'foto_pulang' => 'absensi/' . $fileName,
                                     'updated_at' => now()
                                 ]);
+
+                                // Insert log absensi hanya ketika sudah absensi pulang
+                                DB::table('log_absensi_face_recognition')->insert([
+                                    'member_id' => $memberId,
+                                    'tanggal' => $today,
+                                    'waktu' => $nowTime,
+                                    'nilai_ear' => $result['ear'] ?? null,
+                                    'skor_liveness' => $result['liveness_score'] ?? null,
+                                    'status_liveness' => 1,
+                                    'hasil_pengenalan' => 'berhasil',
+                                    'nama_perangkat' => 'Camera Utama',
+                                    'created_at' => now()
+                                ]);
+
                                 $msg = "Absen Pulang Berhasil: " . $member->name;
                             } else {
                                 // 4. Jika guru/tendik sudah scan pulang

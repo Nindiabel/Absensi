@@ -158,9 +158,18 @@ function initWebcam() {
         }
 
         const context = canvas.getContext('2d');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const MAX_WIDTH = 640;
+        let width = video.videoWidth;
+        let height = video.videoHeight;
+        
+        if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        context.drawImage(video, 0, 0, width, height);
 
         canvas.toBlob(function(blob) {
             const formData = new FormData();

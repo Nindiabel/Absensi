@@ -156,10 +156,20 @@ function initScanWebcam() {
         if (!stream || !isScanning || isProcessing) return;
 
         isProcessing = true;
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
+        
+        const MAX_WIDTH = 640;
+        let width = video.videoWidth;
+        let height = video.videoHeight;
+        
+        if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
         const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(video, 0, 0, width, height);
 
         scanOverlay.style.setProperty('display', 'flex', 'important');
 
@@ -176,6 +186,13 @@ function initScanWebcam() {
                 processData: false,
                 contentType: false,
                 success: function (res) {
+                    if (res.waiting_blink) {
+                        statusMessage.innerHTML = '<div class="alert alert-warning">' + res.message + '</div>';
+                        scanOverlay.style.setProperty('display', 'none', 'important');
+                        isProcessing = false;
+                        return;
+                    }
+                    
                     if (res.success) {
                         stopScanning();
                         if (typeof Swal !== 'undefined') {
